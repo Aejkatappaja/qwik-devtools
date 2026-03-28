@@ -1,0 +1,46 @@
+{
+  "name": "qwik-devtools",
+  "version": "0.1.0",
+  "description": "Developer tools for Qwik framework applications",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt --browser firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build --browser firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip --browser firefox",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --fix src/",
+    "format": "biome format --write src/"
+  },
+  "keywords": [
+    "qwik",
+    "devtools",
+    "browser-extension",
+    "chrome",
+    "firefox"
+  ],
+  "author": "Aejkatappaja",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aejkatappaja/qwik-devtools.git"
+  },
+  "homepage": "https://github.com/Aejkatappaja/qwik-devtools#readme",
+  "dependencies": {
+    "lit": "^3.3.2",
+    "wxt": "^0.20.20"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.9",
+    "@open-wc/testing-helpers": "^3.0.1",
+    "@types/chrome": "^0.1.38",
+    "@types/jsdom": "^28.0.1",
+    "jsdom": "^29.0.1",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.1"
+  }
+}
