@@ -1,0 +1,44 @@
+:root[data-theme="light"] {
+  --bg-primary: #f0f0f4;
+  --bg-secondary: #e8e8ed;
+  --bg-header: #dfdfe5;
+  --bg-hover: #d8d8df;
+  --bg-active: #d0d0d8;
+  --bg-badge: #c0c0ca;
+  --bg-input: #e8e8ed;
+  --bg-card: #e8e8ed;
+  --bg-tooltip: #8890b0;
+
+  --text-primary: #1a1b2e;
+  --text-secondary: #3b3d56;
+  --text-tertiary: #6e7191;
+  --text-muted: #a0a3b8;
+
+  --border-color: #cdcdd6;
+  --border-subtle: #dddde4;
+  --border-focus: #2e5cba;
+
+  --accent: #2e5cba;
+  --accent-hover: #244fa0;
+  --accent-bg: rgba(46, 92, 186, 0.1);
+  --accent-border: rgba(46, 92, 186, 0.25);
+
+  --signal-color: #6a3bab;
+  --computed-color: #9a6700;
+  --qrl-color: #1a7f37;
+  --element-ref-color: #d1242f;
+  --text-ref-color: #0969da;
+  --string-color: #1a7f37;
+  --number-color: #bc4c00;
+  --boolean-color: #9a6700;
+  --null-color: #8b8fa8;
+  --live-color: #0969da;
+
+  --success: #1a7f37;
+  --warning: #9a6700;
+  --error: #d1242f;
+  --info: #2e5cba;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
