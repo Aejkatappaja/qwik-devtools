@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../styles/global.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <qwik-devtools-root></qwik-devtools-root>
+    <script type="module">
+      const tabId = chrome.devtools.inspectedWindow.tabId;
+      const MAX_RECONNECT_ATTEMPTS = 10;
+      let reconnectAttempts = 0;
+
+      function connect() {
+        let port;
+        try {
+          port = chrome.runtime.connect({ name: `devtools-${tabId}` });
+        } catch {
+          // Extension context invalidated (e.g. after extension reload)
+          return;
+        }
+        reconnectAttempts = 0;
+        window.__devtools_port = port;
+        window.__devtools_tabId = tabId;
+
+        port.onDisconnect.addListener(() => {
+          if (chrome.runtime.lastError) return; // context invalidated
+          if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+            console.debug("[Qwik DevTools] Max reconnect attempts reached, giving up.");
+            return;
+          }
+          reconnectAttempts++;
+          console.debug(`[Qwik DevTools] Port disconnected, reconnecting (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
+          setTimeout(connect, 500);
+        });
+
+        // Notify the devtools-root if it already exists
+        const root = document.querySelector("qwik-devtools-root");
+        if (root && root._reconnect) {
+          root._reconnect(port);
+        }
+      }
+
+      connect();
+      await import("../components/devtools-root.js");
+    </script>
+  </body>
+</html>
