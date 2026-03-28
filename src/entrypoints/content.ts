@@ -208,12 +208,20 @@ export default defineContentScript({
     };
 
     // Abort previous listeners if the content script reinitializes
-    ((window as unknown as Record<string, unknown>).__qwik_dt_abort as AbortController | undefined)?.abort();
+    (
+      (window as unknown as Record<string, unknown>).__qwik_dt_abort as
+        | AbortController
+        | undefined
+    )?.abort();
     const navAbort = new AbortController();
     (window as unknown as Record<string, unknown>).__qwik_dt_abort = navAbort;
 
-    window.addEventListener('message', handleNavMessage, { signal: navAbort.signal });
-    window.addEventListener('popstate', checkUrlChange, { signal: navAbort.signal });
+    window.addEventListener('message', handleNavMessage, {
+      signal: navAbort.signal,
+    });
+    window.addEventListener('popstate', checkUrlChange, {
+      signal: navAbort.signal,
+    });
 
     /** Dual pattern: sendResponse for Chrome, Promise for Firefox */
     browser.runtime.onMessage.addListener(

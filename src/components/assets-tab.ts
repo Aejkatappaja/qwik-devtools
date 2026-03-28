@@ -46,7 +46,10 @@ export class AssetsTab extends LitElement {
   }
 
   override willUpdate(changed: Map<string, unknown>) {
-    if (changed.has('refetchSignal') && this.refetchSignal !== this._lastRefetchSignal) {
+    if (
+      changed.has('refetchSignal') &&
+      this.refetchSignal !== this._lastRefetchSignal
+    ) {
       this._lastRefetchSignal = this.refetchSignal;
       this._fetchAssets();
     }
@@ -77,8 +80,9 @@ export class AssetsTab extends LitElement {
             ${refreshSmallIcon} Rescan
           </button>
         </div>
-        ${d.images.length > 0
-          ? html`
+        ${
+          d.images.length > 0
+            ? html`
               <div class="section-title">Images (${d.images.length})</div>
               ${d.images.map(
                 (img) => html`
@@ -92,9 +96,11 @@ export class AssetsTab extends LitElement {
                 `,
               )}
             `
-          : nothing}
-        ${d.scripts.length > 0
-          ? html`
+            : nothing
+        }
+        ${
+          d.scripts.length > 0
+            ? html`
               <div class="section-title">Scripts (${d.scripts.length})</div>
               ${[...d.scripts]
                 .sort((a, b) => b.size - a.size)
@@ -112,9 +118,11 @@ export class AssetsTab extends LitElement {
                   `,
                 )}
             `
-          : nothing}
-        ${d.styles.length > 0
-          ? html`
+            : nothing
+        }
+        ${
+          d.styles.length > 0
+            ? html`
               <div class="section-title">Stylesheets (${d.styles.length})</div>
               ${[...d.styles]
                 .sort((a, b) => b.size - a.size)
@@ -130,9 +138,11 @@ export class AssetsTab extends LitElement {
                   `,
                 )}
             `
-          : nothing}
-        ${d.preloads.length > 0
-          ? html`
+            : nothing
+        }
+        ${
+          d.preloads.length > 0
+            ? html`
               <div class="section-title">
                 Preloaded Resources (${d.preloads.length})
               </div>
@@ -146,7 +156,8 @@ export class AssetsTab extends LitElement {
                 `,
               )}
             `
-          : nothing}
+            : nothing
+        }
       </div>
     `;
   }

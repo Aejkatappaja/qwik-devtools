@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { detectObjectType } from './qwik-state-parser.js';
 import {
   BASIC_STATE_JSON,
   EMPTY_STATE_JSON,
 } from './fixtures/sample-qwik-json.js';
+import { detectObjectType } from './qwik-state-parser.js';
 
 describe('detectObjectType', () => {
   it('detects string type', () => {

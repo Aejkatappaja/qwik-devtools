@@ -10,8 +10,8 @@ import {
   VIRTUAL_SCROLL_THRESHOLD,
 } from '../lib/constants.js';
 import type { QwikComponentNode } from '../lib/types.js';
-import { collapseAllIcon, expandAllIcon } from './shared/icons.js';
 import { styles } from './components-tab.styles.js';
+import { collapseAllIcon, expandAllIcon } from './shared/icons.js';
 import './shared/tree-node.js';
 import './detail-panel.js';
 
@@ -239,7 +239,10 @@ export class ComponentsTab extends LitElement {
     return null;
   }
 
-  private _buildBreadcrumb(nodes: QwikComponentNode[], targetId: string): string[] {
+  private _buildBreadcrumb(
+    nodes: QwikComponentNode[],
+    targetId: string,
+  ): string[] {
     for (const node of nodes) {
       if (node.id === targetId) return [node.componentName];
       const childPath = this._buildBreadcrumb(node.children, targetId);

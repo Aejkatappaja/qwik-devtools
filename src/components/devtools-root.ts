@@ -167,11 +167,13 @@ export class DevtoolsRoot extends LitElement {
     // Show loading overlay WITHOUT destroying tabs so their
     // willUpdate can detect data resets and re-fetch.
     return html`
-      ${this._store.isLoading
-        ? html`<div class="loading-overlay">
+      ${
+        this._store.isLoading
+          ? html`<div class="loading-overlay">
             <div class="spinner"></div>
           </div>`
-        : nothing}
+          : nothing
+      }
       ${this._renderTabs()}
     `;
   }
@@ -280,7 +282,6 @@ export class DevtoolsRoot extends LitElement {
     this._store.resumabilityData = e.detail;
     this.requestUpdate();
   }
-
 
   private _handleRefresh() {
     this._store.fetchAll();

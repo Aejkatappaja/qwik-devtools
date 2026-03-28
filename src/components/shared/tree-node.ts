@@ -1,6 +1,6 @@
 import type { CSSResult, TemplateResult } from 'lit';
 import { html, LitElement, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import {
   HIGHLIGHT_OVERLAY_ID,
   MAX_TREE_DEPTH,

@@ -134,15 +134,16 @@ export class DetailPanel extends LitElement {
           </button>
         </div>
         <div class="detail-breadcrumb">
-          ${this.breadcrumb.length > 1
-            ? html`<div class="breadcrumb-path">
+          ${
+            this.breadcrumb.length > 1
+              ? html`<div class="breadcrumb-path">
                 ${this.breadcrumb.map((name, i) =>
                   i < this.breadcrumb.length - 1
                     ? html`<span class="crumb">${name}</span><span class="crumb-sep">\u203A</span>`
-                    : nothing
+                    : nothing,
                 )}
               </div>`
-            : nothing
+              : nothing
           }
           <div class="breadcrumb-meta">
             #${node.id}${node.key ? html` \u00B7 key=${node.key}` : nothing}
@@ -161,7 +162,7 @@ export class DetailPanel extends LitElement {
       key: this.node.key,
       depth: this.node.depth,
       attributes: this.node.attributes,
-      state: this.node.state.map(s => ({
+      state: this.node.state.map((s) => ({
         type: s.type,
         value: s.rawValue,
       })),
@@ -169,7 +170,9 @@ export class DetailPanel extends LitElement {
     await navigator.clipboard.writeText(JSON.stringify(info, null, 2));
     this._copied = true;
     if (this._copyTimeout) clearTimeout(this._copyTimeout);
-    this._copyTimeout = setTimeout(() => { this._copied = false; }, 1500);
+    this._copyTimeout = setTimeout(() => {
+      this._copied = false;
+    }, 1500);
   }
 
   private _renderSignals(

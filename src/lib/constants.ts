@@ -1,21 +1,21 @@
 export const QWIK_ATTR = {
-  CONTAINER: "q:container",
-  VERSION: "q:version",
-  RENDER: "q:render",
-  BASE: "q:base",
-  ROUTE: "q:route",
-  MANIFEST_HASH: "q:manifest-hash",
-  ID: "q:id",
-  KEY: "q:key",
+  CONTAINER: 'q:container',
+  VERSION: 'q:version',
+  RENDER: 'q:render',
+  BASE: 'q:base',
+  ROUTE: 'q:route',
+  MANIFEST_HASH: 'q:manifest-hash',
+  ID: 'q:id',
+  KEY: 'q:key',
 } as const;
 
-export const QWIK_CONTAINER_SELECTOR = "[q\\:container]";
+export const QWIK_CONTAINER_SELECTOR = '[q\\:container]';
 
-export const VIRTUAL_NODE_TAG = "<!--qv-->";
+export const VIRTUAL_NODE_TAG = '<!--qv-->';
 
 export const EVENT_ATTR_PREFIX = {
-  COLON: "on:",
-  DASH: "on-",
+  COLON: 'on:',
+  DASH: 'on-',
 } as const;
 
 export const SERIALIZATION_PREFIX = {
@@ -24,9 +24,9 @@ export const SERIALIZATION_PREFIX = {
   QRL: 0x02, // \u0002
 } as const;
 
-export const QWIK_JSON_SCRIPT_TYPE = "qwik/json";
+export const QWIK_JSON_SCRIPT_TYPE = 'qwik/json';
 
-export const HIGHLIGHT_OVERLAY_ID = "__qwik_dt_highlight";
+export const HIGHLIGHT_OVERLAY_ID = '__qwik_dt_highlight';
 
 /** Polling interval (ms) for live DOM state watching */
 export const LIVE_POLL_INTERVAL_MS = 800;
@@ -46,7 +46,7 @@ export function safeQIdSelector(qId: string): string {
   // Qwik q:id values are typically numeric or short alphanumeric strings.
   // Reject anything with suspicious characters as defense-in-depth.
   if (!/^[\w.-]+$/.test(qId)) {
-    console.debug("[Qwik DevTools] Unexpected q:id format:", qId);
+    console.debug('[Qwik DevTools] Unexpected q:id format:', qId);
     return '[q\\\\:id="invalid"]';
   }
   return `[q\\\\:id="${qId}"]`;
@@ -57,14 +57,14 @@ export function safeQIdSelector(qId: string): string {
  * Avoids unsafe `as Record<string, unknown>` casts.
  */
 export function isRecord(v: unknown): v is Record<string, unknown> {
-  return typeof v === "object" && v !== null && !Array.isArray(v);
+  return typeof v === 'object' && v !== null && !Array.isArray(v);
 }
 
 /**
  * Normalize a route path for comparison: always ends with '/'.
  */
 export function normalizePath(path: string): string {
-  return path.endsWith("/") ? path : `${path}/`;
+  return path.endsWith('/') ? path : `${path}/`;
 }
 
 // ---- Pre-compiled regexes for component-tree-builder ----
