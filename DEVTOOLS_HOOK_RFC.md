@@ -2,7 +2,7 @@
 
 ## Summary
 
-Propose adding a global devtools hook to Qwik's signal system, enabling browser extensions to inspect live signal values, track state changes, and display component names — similar to React's `__REACT_DEVTOOLS_GLOBAL_HOOK__` and Vue's `__VUE_DEVTOOLS_GLOBAL_HOOK__`.
+Propose adding a global devtools hook to Qwik's signal system, enabling browser extensions to inspect live signal values, track state changes, and display component names , similar to React's `__REACT_DEVTOOLS_GLOBAL_HOOK__` and Vue's `__VUE_DEVTOOLS_GLOBAL_HOOK__`.
 
 ## Motivation
 
@@ -25,6 +25,23 @@ The extension currently reads the `<script type="qwik/json">` for the SSR snapsh
 4. Track which signals triggered a re-render
 
 React and Vue solved this by exposing a global hook object that their devtools extensions consume. Qwik currently has no equivalent.
+
+### v1 → v2 breakage: why a stable API matters now
+
+The extension works on Qwik v1 by reading DOM conventions (`q:id`, `q:key`, `on:click`, `<!--qv-->` comments, `<script type="qwik/json">`). **Qwik v2 changed all of these internal formats:**
+
+| Feature | v1 | v2 |
+|---|---|---|
+| Element IDs | `q:id="0"` | `:="CL_1"` |
+| Keys | `q:key="counter_1"` | removed |
+| Event handlers | `on:click="./chunk.js#fn"` | `q-e:click="/@qwik-handlers#_run#2"` |
+| Virtual nodes | `<!--qv q:id=4-->` comments in DOM | `<script type="qwik/vnode">` (separate from DOM) |
+| Serialized state | `<script type="qwik/json">` with `{refs, ctx, objs, subs}` | `<script type="qwik/state">` (compact binary-ish format) |
+| Runtime marker | n/a | `q:runtime="2"` |
+
+This means the extension is **v1-only today** , not because of a bug, but because there is no stable contract for external tools to rely on. Every time Qwik changes its internal serialization, all external tooling breaks.
+
+A `__QWIK_DEVTOOLS_HOOK__` would provide a **versioned, stable API** that survives internal format changes , the same pattern that has worked for React (since 2015) and Vue (since 2016) across multiple major versions.
 
 ## Proposed API
 
@@ -72,9 +89,9 @@ interface QwikDevtoolsHook {
 
 ## Where to inject in Qwik source
 
-Based on analysis of the codebase:
+> **Note:** The paths below reference the v1 codebase. v2 may have reorganized these, but the injection points (signal setter, subscription manager, render cycle) should have equivalents.
 
-### Signal read/write — `packages/qwik/src/core/state/signal.ts`
+### Signal read/write  - `packages/qwik/src/core/state/signal.ts`
 
 The `SignalImpl` class has `get value()` and `set value()`. The setter is where we can notify devtools:
 
@@ -94,23 +111,23 @@ set value(v: T) {
 }
 ```
 
-### Signal subscriptions — `packages/qwik/src/core/state/common.ts`
+### Signal subscriptions  - `packages/qwik/src/core/state/common.ts`
 
 `LocalSubscriptionManager.$notifySubs$()` is called when signals change. We can hook here to track which elements are re-rendered and why.
 
-### Component context — `packages/qwik/src/core/use/use-context.ts`
+### Component context  - `packages/qwik/src/core/use/use-context.ts`
 
 The context storage per element (`element.$contexts$`) can expose component info to devtools.
 
-### Signal creation — `packages/qwik/src/core/use/use-signal.ts`
+### Signal creation  - `packages/qwik/src/core/use/use-signal.ts`
 
 `useSignal()` calls `_createSignal()`. We can register newly created signals with the devtools hook here, including the variable name in dev mode.
 
-### Render cycle — `packages/qwik/src/core/render/dom/notify-render.ts`
+### Render cycle  - `packages/qwik/src/core/render/dom/notify-render.ts`
 
 `notifyRender()` and `scheduleFrame()` control the render cycle. Wrapping these allows devtools to track render timing and reasons.
 
-### Framework init — `packages/qwik/src/qwikloader.ts`
+### Framework init  - `packages/qwik/src/qwikloader.ts`
 
 The qwikloader fires `qinit`, `qidle`, `qsymbol` events. A `qdevtools` event or hook registration could happen here.
 
@@ -119,7 +136,7 @@ The qwikloader fires `qinit`, `qidle`, `qsymbol` events. A `qdevtools` event or 
 - All hook calls should be gated behind `__DEV__` or a `typeof window.__QWIK_DEVTOOLS_HOOK__ !== 'undefined'` check
 - In production builds, the hook code should be tree-shaken completely
 - The check itself is a single property lookup on `window`, which is negligible (~0.001ms)
-- Signal getter should NOT be hooked (too hot path) — only the setter on change
+- Signal getter should NOT be hooked (too hot path)  - only the setter on change
 - Callbacks should be batched (don't fire per-signal, fire per-frame)
 
 ## Implementation approach
@@ -144,7 +161,7 @@ The qwikloader fires `qinit`, `qidle`, `qsymbol` events. A `qdevtools` event or 
 | Vue       | `__VUE_DEVTOOLS_GLOBAL_HOOK__`   | Vue DevTools v1 (2016)   |
 | Svelte    | `__svelte`                       | Svelte DevTools (2019)   |
 | Solid     | `window._$afterCreateRoot`       | Solid DevTools (2022)    |
-| **Qwik**  | **none**                         | —                        |
+| **Qwik**  | **none**                         | n/a                      |
 
 ## What the extension already does without the hook
 
@@ -160,8 +177,8 @@ The browser extension is published and functional today:
 
 ## What the hook would unlock
 
-- **Live signal values** — see actual current values, not just SSR snapshot
-- **Signal change tracking** — highlight which signals changed and when
-- **Component names** — real component function names instead of hashed q:key values in prod
-- **Render profiling** — track re-renders with timing and causality (which signal triggered which render)
-- **Signal dependency graph** — visualize which signals subscribe to which components
+- **Live signal values**: see actual current values, not just SSR snapshot
+- **Signal change tracking**: highlight which signals changed and when
+- **Component names**: real component function names instead of hashed q:key values in prod
+- **Render profiling**: track re-renders with timing and causality (which signal triggered which render)
+- **Signal dependency graph**: visualize which signals subscribe to which components
